@@ -1,10 +1,10 @@
-const config= require('./js/config');
+const config = require('./js/config');
 const Twit = require('twit');
 const express = require('express');
 const app = express();
 
 app.set('view engine', 'pug');
-app.use(express.static('css'));
+app.use('/static', express.static('public'));
 
 //SETTING UP TWIT MODULE OPTIONS
 const T = new Twit({
