@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 
 app.set('view engine', 'pug');
-
+app.use(express.static('css'));
 
 //SETTING UP TWIT MODULE OPTIONS
 const T = new Twit({
@@ -20,26 +20,24 @@ const options = { screen_name: config.screen_name,
 
 const tweetsSent = [];
 
-async function getTweets(){
-  try{
-    //ITERATE THROUGH TWEETS AND PRINT TO CONSOLE
-    await T.get('statuses/user_timeline', options , function(err, data) {
-      for (var i = 0; i < data.length ; i++) {
-        // console.log(data[i].text);
-        tweetsSent.push(data[i].text);
-        console.log(tweetsSent[i]);
-      }
-    });
-  }catch(err){
+async function getTweets() {
+  try {
+    return await T.get('statuses/user_timeline', options);
+  } catch (err) {
     console.log('Could not retrieve tweets');
   }
-  return tweetsSent;
 }
 // getTweets();
 
-app.get('/',(req,res)=>{
-  res.render('index', {
-    tweetsSent: getTweets()
+app.get('/', (req, res) => {
+  getTweets().then(tweets => {
+    tweets.data.forEach(element => {
+      tweetsSent.push(element.text)
+    });
+    res.render('index', {
+      tweetsSent
+    });
+    console.log(tweetsSent);
   });
 });
 ////////////////
