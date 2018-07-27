@@ -6,7 +6,6 @@ const app = express();
 app.set('view engine', 'pug');
 
 
-
 //SETTING UP TWIT MODULE OPTIONS
 const T = new Twit({
    consumer_key: config.consumer_key,
@@ -34,12 +33,14 @@ async function getTweets(){
   }catch(err){
     console.log('Could not retrieve tweets');
   }
+  return tweetsSent;
 }
-getTweets();
+// getTweets();
 
 app.get('/',(req,res)=>{
-  
-  res.render('index');
+  res.render('index', {
+    tweetsSent: getTweets()
+  });
 });
 ////////////////
 ///SEND TWEET///
