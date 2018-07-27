@@ -1075,7 +1075,7 @@ select:focus {
 .circle--select {
   position: relative;
   width: 100%;
-  box-sizing: border-box;
+  border-sizing: border-box;
   border: 1px solid #aeddfa;
   height: 50px;
   border-radius: 8px;
