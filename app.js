@@ -19,6 +19,10 @@ const options = { screen_name: config.screen_name,
  count: 5 };
 
 const tweetsSent = [];
+let userScreenName = '';
+let userHandle ='';
+let userPic= '';
+let following = '';
 
 async function getTweets() {
   try {
@@ -34,10 +38,31 @@ app.get('/', (req, res) => {
     tweets.data.forEach(element => {
       tweetsSent.push(element.text)
     });
+    userScreenName = tweets.data[0].user.name;
+    // tweets.data.forEach(element =>{
+    //   userScreenName.push(element.user.name);
+    // });
+    userHandle = tweets.data[0].user.screen_name;
+    // tweets.data.forEach(element =>{
+    //   userHandle.push(element.user.screen_name);
+    // });
+    userPic= tweets.data[0].user.profile_image_url;
+    // tweets.data.forEach(element =>{
+    //   userPic.push(element.user.profile_image_url);
+    // });
+    following = tweets.data[0].user.friends_count;
     res.render('index', {
-      tweetsSent
+      tweetsSent,
+      userScreenName,
+      userHandle,
+      userPic,
+      following
     });
-    console.log(tweetsSent);
+    // console.log(tweetsSent);
+    // console.log(userScreenName);
+    // console.log(userHandle);
+    // console.log(userPic);
+    console.log(following);
   });
 });
 ////////////////
