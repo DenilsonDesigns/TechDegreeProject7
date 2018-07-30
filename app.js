@@ -33,26 +33,31 @@ let friendImages = [];   //profile_image_url
 
 
 //GET USERS LATEST 5 TWEETS
-async function getTweets() {
-  try {
-    return await T.get('statuses/user_timeline', options1);
-  } catch (err) {
-    console.log('Could not retrieve tweets');
-  }
-}
+const getTweets = new Promise((resolve, reject)=>{
+  resolve(T.get('statuses/user_timeline', options1));
+  reject(new Error('Could not get tweets'));
+});
 
 //GET FOLLOWING/FRIENDS LIST
-async function getFriends(){
-  try {
-    return await T.get('friends/list', options2);
-  } catch (err) {
-    console.log('Could not retrieve friends');
-  }
-}
+const getFriends = new Promise((resolve, reject)=>{
+  resolve(T.get('friends/list', options2));
+  reject(new Error('Could not retrieve friends data'));
+});
+
+//SLIDE IN DMS
+// const slideInDms = new Promise((resolve, reject)=>{
+//   resolve(T.get('direct_messages/events/list', options2));
+//   reject(new Error('Could not slide in DMs'));
+// });
 
 
+
+//MAIN RENDER*************
 app.get('/', (req, res) => {
-  getFriends().then(friends=>{
+  // slideInDms.then(dms=> {
+  //   console.log(dms);
+  // });
+  getFriends.then(friends=>{
     //FILLING FRIENDS DATA CONTAINERS
     friends.data.users.forEach(element => {
       friendNames.push(element.name);
@@ -64,7 +69,7 @@ app.get('/', (req, res) => {
       friendImages.push(element.profile_image_url);
     });
   });
-  getTweets().then(tweets => {
+  getTweets.then(tweets => {
     tweets.data.forEach(element => {
       tweetsSent.push(element.text)
     });
