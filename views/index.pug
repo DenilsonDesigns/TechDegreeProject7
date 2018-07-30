@@ -58,7 +58,7 @@ html(lang="en")
               h2 Timeline
           .grid-33
             .app--section--heading
-              strong #{following}
+              strong #{followingCount}
               h2 Following
           .grid-33
             .app--section--heading
@@ -69,8 +69,8 @@ html(lang="en")
               li
                 strong.app--tweet--timestamp 4h
                 a.app--tweet--author
-                  .app--avatar(style='background-image: url(/static/images/f-spore.png)')
-                    img(src='/static/images/f-spore.png')
+                  .app--avatar(style=`background-image: url(${userPic})`)
+                    img(src=`${userPic}`)
                   h4 #{userScreenName}
                   |  @#{userHandle}
                 p #{tweetsSent[0]}
@@ -103,7 +103,7 @@ html(lang="en")
               li
                 strong.app--tweet--timestamp 4h
                 a.app--tweet--author
-                  .app--avatar(style='background-image: url(/static/images/f-spore.png)')
+                  .app--avatar(style=`background-image: url(${userPic})`)
                     img(src='/static/images/f-spore.png')
                   h4 #{userScreenName}
                   |  @#{userHandle}
@@ -137,7 +137,7 @@ html(lang="en")
               li
                 strong.app--tweet--timestamp 4h
                 a.app--tweet--author
-                  .app--avatar(style='background-image: url(/static/images/f-spore.png)')
+                  .app--avatar(style=`background-image: url(${userPic})`)
                     img(src='/static/images/f-spore.png')
                   h4 #{userScreenName}
                   |  @#{userHandle}
@@ -171,7 +171,7 @@ html(lang="en")
               li
                 strong.app--tweet--timestamp 4h
                 a.app--tweet--author
-                  .app--avatar(style='background-image: url(/static/images/f-spore.png)')
+                  .app--avatar(style=`background-image: url(${userPic})`)
                     img(src='/static/images/f-spore.png')
                   h4 #{userScreenName}
                   |  @#{userHandle}
@@ -205,7 +205,7 @@ html(lang="en")
               li
                 strong.app--tweet--timestamp 4h
                 a.app--tweet--author
-                  .app--avatar(style='background-image: url(/static/images/f-spore.png)')
+                  .app--avatar(style=`background-image: url(${userPic})`)
                     img(src='/static/images/f-spore.png')
                   h4 #{userScreenName}
                   |  @#{userHandle}
@@ -243,10 +243,10 @@ html(lang="en")
                 .circle--fluid
                   .circle--fluid--cell.circle--fluid--primary
                     a.app--tweet--author
-                      .app--avatar(style='background-image: url(/static/images/f-spore.png)')
+                      .app--avatar(style=`background-image: url(${friendImages[0]})`)
                         img(src='/static/images/f-spore.png')
-                      h4 Jill Spore
-                      p @jillspore
+                      h4 #{friendNames[0]}
+                      p @#{friendHandles[0]}
                   .circle--fluid--cell
                     a.button.button-text Unfollow
               li

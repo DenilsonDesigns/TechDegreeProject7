@@ -15,56 +15,81 @@ const T = new Twit({
  });
 
 //SET UP USERNAME AND TWEET COUNT
-const options = { screen_name: config.screen_name,
+const options1 = { screen_name: config.screen_name,
  count: 5 };
+const options2 = {screen_name: config.screen_name};
 
+//DATA CONTAINERS
 const tweetsSent = [];
 let userScreenName = '';
 let userHandle ='';
 let userPic= '';
-let following = '';
+let followingCount = '';
+let friendsList = '';
+//FOR FRIENDS LIST
+let friendNames = [];    //name
+let friendHandles = [];  //screen_name
+let friendImages = [];   //profile_image_url
 
+
+//GET USERS LATEST 5 TWEETS
 async function getTweets() {
   try {
-    return await T.get('statuses/user_timeline', options);
+    return await T.get('statuses/user_timeline', options1);
   } catch (err) {
     console.log('Could not retrieve tweets');
   }
 }
-// getTweets();
+
+//GET FOLLOWING/FRIENDS LIST
+async function getFriends(){
+  try {
+    return await T.get('friends/list', options2);
+  } catch (err) {
+    console.log('Could not retrieve friends');
+  }
+}
+
 
 app.get('/', (req, res) => {
+  getFriends().then(friends=>{
+    //FILLING FRIENDS DATA CONTAINERS
+    friends.data.users.forEach(element => {
+      friendNames.push(element.name);
+    });
+    friends.data.users.forEach(element => {
+      friendHandles.push(element.screen_name);
+    });
+    friends.data.users.forEach(element => {
+      friendImages.push(element.profile_image_url);
+    });
+  });
   getTweets().then(tweets => {
     tweets.data.forEach(element => {
       tweetsSent.push(element.text)
     });
     userScreenName = tweets.data[0].user.name;
-    // tweets.data.forEach(element =>{
-    //   userScreenName.push(element.user.name);
-    // });
     userHandle = tweets.data[0].user.screen_name;
-    // tweets.data.forEach(element =>{
-    //   userHandle.push(element.user.screen_name);
-    // });
     userPic= tweets.data[0].user.profile_image_url;
-    // tweets.data.forEach(element =>{
-    //   userPic.push(element.user.profile_image_url);
-    // });
-    following = tweets.data[0].user.friends_count;
-    res.render('index', {
-      tweetsSent,
-      userScreenName,
-      userHandle,
-      userPic,
-      following
-    });
-    // console.log(tweetsSent);
-    // console.log(userScreenName);
-    // console.log(userHandle);
-    // console.log(userPic);
-    console.log(following);
+    followingCount = tweets.data[0].user.friends_count;
+
+    Promise.all([getFriends, getTweets]).then(
+      res.render('index', {
+        tweetsSent,
+        userScreenName,
+        userHandle,
+        userPic,
+        followingCount,
+        friendNames,
+        friendHandles,
+        friendImages
+      })
+    );
   });
 });
+
+
+
 ////////////////
 ///SEND TWEET///
 ////////////////
