@@ -45,18 +45,18 @@ const getFriends = new Promise((resolve, reject)=>{
 });
 
 //SLIDE IN DMS
-// const slideInDms = new Promise((resolve, reject)=>{
-//   resolve(T.get('direct_messages/events/list', options2));
-//   reject(new Error('Could not slide in DMs'));
-// });
+const slideInDms = new Promise((resolve, reject)=>{
+  resolve(T.get('direct_messages/events/list', options2));
+  reject(new Error('Could not slide in DMs'));
+});
 
 
 
 //MAIN RENDER*************
 app.get('/', (req, res) => {
-  // slideInDms.then(dms=> {
-  //   console.log(dms);
-  // });
+  slideInDms.then(dms=> {
+    console.log(dms.data.events[0].message_create.message_data);
+  });
   getFriends.then(friends=>{
     //FILLING FRIENDS DATA CONTAINERS
     friends.data.users.forEach(element => {
