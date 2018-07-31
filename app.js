@@ -19,7 +19,8 @@ const options1 = { screen_name: config.screen_name,
  count: 5 };
 const options2 = {screen_name: config.screen_name};
 
-
+let dmKey = config.access_token.slice(0,18);
+console.log(dmKey);
 
 
 //GET USERS LATEST 5 TWEETS
@@ -66,7 +67,22 @@ app.get('/', (req, res) => {
 
 
   slideInDms.then(dms=> {
-    console.log(dms.data.events);
+      dms.data.events.forEach(element => {
+        let dmVerify = element.message_create.sender_id;
+        console.log(dmKey.startsWith(dmVerify));
+        if(dmKey.startsWith(dmVerify)){
+          dmText.unshift(element.message_create.message_data.text);
+        }
+      });
+    
+    console.log(dmText);
+    // let dmVerify = dms.data.events[0].message_create.sender_id;
+
+    // if(dmKey !== dmVerify){
+    //   dmText.push(dms.data.events[0].message_create.message_data.text);
+    // }
+    
+    // console.log(dms.data.events[0].message_create.sender_id);
     // console.log(dms.data.events[0].message_create.message_data);
   });
 
