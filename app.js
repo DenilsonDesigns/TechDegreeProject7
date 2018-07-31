@@ -19,17 +19,7 @@ const options1 = { screen_name: config.screen_name,
  count: 5 };
 const options2 = {screen_name: config.screen_name};
 
-//DATA CONTAINERS
-const tweetsSent = [];
-let userScreenName = '';
-let userHandle ='';
-let userPic= '';
-let followingCount = '';
-let friendsList = '';
-//FOR FRIENDS LIST
-let friendNames = [];    //name
-let friendHandles = [];  //screen_name
-let friendImages = [];   //profile_image_url
+
 
 
 //GET USERS LATEST 5 TWEETS
@@ -54,9 +44,33 @@ const slideInDms = new Promise((resolve, reject)=>{
 
 //MAIN RENDER*************
 app.get('/', (req, res) => {
+  //DATA CONTAINERS
+  let tweetsSent = [];
+  let tweetLikes = [];
+  let tweetReTweets = [];
+  let tweetDate = [];
+  let userScreenName = '';
+  let userHandle ='';
+  let userPic= '';
+  let userBanner = '';
+  let followingCount = '';
+  let friendsList = '';
+  //FOR FRIENDS LIST
+  let friendNames = [];    //name
+  let friendHandles = [];  //screen_name
+  let friendImages = [];   //profile_image_url
+  //FOR DMS
+  let friendNameDM = '';
+  let dmText = [];
+  let friendImageDM = '';
+
+
   slideInDms.then(dms=> {
-    console.log(dms.data.events[0].message_create.message_data);
+    console.log(dms.data.events);
+    // console.log(dms.data.events[0].message_create.message_data);
   });
+
+
   getFriends.then(friends=>{
     //FILLING FRIENDS DATA CONTAINERS
     friends.data.users.forEach(element => {
@@ -71,19 +85,29 @@ app.get('/', (req, res) => {
   });
   getTweets.then(tweets => {
     tweets.data.forEach(element => {
-      tweetsSent.push(element.text)
+      tweetsSent.push(element.text);
+      tweetLikes.push(element.favorite_count);
+      tweetReTweets.push(element.retweet_count);
+      tweetDate.push(element.created_at.slice(4,10));
     });
     userScreenName = tweets.data[0].user.name;
     userHandle = tweets.data[0].user.screen_name;
     userPic= tweets.data[0].user.profile_image_url;
     followingCount = tweets.data[0].user.friends_count;
+    userBanner = tweets.data[0].user.profile_banner_url;
 
-    Promise.all([getFriends, getTweets]).then(
+    
+
+    Promise.all([getFriends, getTweets, slideInDms]).then(
       res.render('index', {
         tweetsSent,
         userScreenName,
         userHandle,
         userPic,
+        userBanner,
+        tweetReTweets,
+        tweetLikes,
+        tweetDate,
         followingCount,
         friendNames,
         friendHandles,

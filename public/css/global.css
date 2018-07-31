@@ -1452,6 +1452,8 @@ li:only-child .circle--clone--remove {
   background: #1da1f2;
   padding: 20px 0;
   margin-bottom: 30px;
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 /* line 2, ../sass/circle/core/_mixins.sass */
 .circle--header:before, .circle--header:after {
