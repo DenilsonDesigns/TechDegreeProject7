@@ -88,6 +88,7 @@ app.get('/', (req, res) => {
   let dmText = [];
   let dmDate = [];
   let friendImageDM = '';
+
   
   slideInDms.then(dms=> {
       dms.data.events.forEach(element => {
@@ -100,6 +101,8 @@ app.get('/', (req, res) => {
       console.log(dmDate);
       console.log(dmText);
       console.log(dmPartnerID);
+    // console.log(dms.data.events[0].message_create.sender_id);
+    // console.log(dms.data.events[0].message_create.message_data);
     getDmPartner(dmPartnerID).then(partner=>{
       friendNameDM = partner.data[0].name;
       console.log(friendNameDM);
