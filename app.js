@@ -19,9 +19,10 @@ const options1 = { screen_name: config.screen_name,
  count: 5 };
 const options2 = {screen_name: config.screen_name};
 
-let dmKey = config.access_token.slice(0,18);
-console.log(dmKey);
 
+let userKey = config.access_token.split("-");
+userKey = Number(userKey[0]);
+// console.log(userKey);
 
 //GET USERS LATEST 5 TWEETS
 const getTweets = new Promise((resolve, reject)=>{
@@ -40,6 +41,27 @@ const slideInDms = new Promise((resolve, reject)=>{
   resolve(T.get('direct_messages/events/list', options2));
   reject(new Error('Could not slide in DMs'));
 });
+
+// GET DM PARTNER DEETS
+const getDmPartner = function(dmPart){
+  return new Promise((resolve, reject)=>{
+    resolve(T.get('users/lookup', {user_id: dmPart}));
+    reject(new Error('Could not retrieve DM partner'));
+  });
+}
+
+
+
+ 
+
+
+//CONVERT TIMESTAMP TO DATE
+function timestampToDate(timestamp){
+  let ts = timestamp; //dms.data.events[0].created_timestamp
+  ts = new Date();
+  ts = ts.toDateString().slice(4,10);
+  return ts;
+}
 
 
 
@@ -61,31 +83,30 @@ app.get('/', (req, res) => {
   let friendHandles = [];  //screen_name
   let friendImages = [];   //profile_image_url
   //FOR DMS
+  let dmPartnerID = '';
   let friendNameDM = '';
   let dmText = [];
+  let dmDate = [];
   let friendImageDM = '';
-
-
+  
   slideInDms.then(dms=> {
       dms.data.events.forEach(element => {
-        let dmVerify = element.message_create.sender_id;
-        console.log(dmKey.startsWith(dmVerify));
-        if(dmKey.startsWith(dmVerify)){
-          dmText.unshift(element.message_create.message_data.text);
+        if(userKey != element.message_create.sender_id){
+          dmPartnerID = element.message_create.sender_id;
+          dmDate.push(timestampToDate(element.created_timestamp));
+          dmText.push(element.message_create.message_data.text);
         }
       });
-    
-    console.log(dmText);
-    // let dmVerify = dms.data.events[0].message_create.sender_id;
-
-    // if(dmKey !== dmVerify){
-    //   dmText.push(dms.data.events[0].message_create.message_data.text);
-    // }
-    
-    // console.log(dms.data.events[0].message_create.sender_id);
-    // console.log(dms.data.events[0].message_create.message_data);
+      console.log(dmDate);
+      console.log(dmText);
+      console.log(dmPartnerID);
+    getDmPartner(dmPartnerID).then(partner=>{
+      friendNameDM = partner.data[0].name;
+      console.log(friendNameDM);
+      friendImageDM = partner.data[0].profile_image_url;
+      console.log(friendImageDM);
+    });
   });
-
 
   getFriends.then(friends=>{
     //FILLING FRIENDS DATA CONTAINERS
@@ -112,8 +133,6 @@ app.get('/', (req, res) => {
     followingCount = tweets.data[0].user.friends_count;
     userBanner = tweets.data[0].user.profile_banner_url;
 
-    
-
     Promise.all([getFriends, getTweets, slideInDms]).then(
       res.render('index', {
         tweetsSent,
@@ -127,7 +146,11 @@ app.get('/', (req, res) => {
         followingCount,
         friendNames,
         friendHandles,
-        friendImages
+        friendImages,
+        dmText,
+        dmDate,
+        friendNameDM,
+        friendImageDM
       })
     );
   });

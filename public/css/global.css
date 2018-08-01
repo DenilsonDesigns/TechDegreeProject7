@@ -2410,10 +2410,11 @@ a:hover .app--avatar {
 /* line 207, ../sass/global.sass */
 .app--message--list, .app--message--conversation {
   list-style: none;
+  /* overflow: scroll; */
 }
 /* line 210, ../sass/global.sass */
 .app--message--list .app--avatar, .app--message--conversation .app--avatar {
-  position: absolute;
+  /* position: absolute; */
   bottom: 10px;
   margin: 0;
 }
