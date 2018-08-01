@@ -98,9 +98,9 @@ app.get('/', (req, res) => {
           dmText.push(element.message_create.message_data.text);
         }
       });
-      console.log(dmDate);
-      console.log(dmText);
-      console.log(dmPartnerID);
+      // console.log(dmDate);
+      // console.log(dmText);
+      // console.log(dmPartnerID);
     // console.log(dms.data.events[0].message_create.sender_id);
     // console.log(dms.data.events[0].message_create.message_data);
     getDmPartner(dmPartnerID).then(partner=>{
@@ -136,7 +136,7 @@ app.get('/', (req, res) => {
     followingCount = tweets.data[0].user.friends_count;
     userBanner = tweets.data[0].user.profile_banner_url;
 
-    Promise.all([getFriends, getTweets, slideInDms]).then(
+    Promise.all([getFriends, getTweets, slideInDms, getDmPartner]).then(
       res.render('index', {
         tweetsSent,
         userScreenName,
