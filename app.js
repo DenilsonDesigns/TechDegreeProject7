@@ -50,11 +50,6 @@ const getDmPartner = function(dmPart){
   });
 }
 
-
-
- 
-
-
 //CONVERT TIMESTAMP TO DATE
 function timestampToDate(timestamp){
   let ts = timestamp; //dms.data.events[0].created_timestamp
@@ -62,8 +57,6 @@ function timestampToDate(timestamp){
   ts = ts.toDateString().slice(4,10);
   return ts;
 }
-
-
 
 //MAIN RENDER*************
 app.get('/', (req, res) => {
@@ -77,7 +70,6 @@ app.get('/', (req, res) => {
   let userPic= '';
   let userBanner = '';
   let followingCount = '';
-  let friendsList = '';
   //FOR FRIENDS LIST
   let friendNames = [];    //name
   let friendHandles = [];  //screen_name
@@ -89,27 +81,6 @@ app.get('/', (req, res) => {
   let dmDate = [];
   let friendImageDM = '';
 
-  
-  slideInDms.then(dms=> {
-      dms.data.events.forEach(element => {
-        if(userKey != element.message_create.sender_id){
-          dmPartnerID = element.message_create.sender_id;
-          dmDate.push(timestampToDate(element.created_timestamp));
-          dmText.push(element.message_create.message_data.text);
-        }
-      });
-      // console.log(dmDate);
-      // console.log(dmText);
-      // console.log(dmPartnerID);
-    // console.log(dms.data.events[0].message_create.sender_id);
-    // console.log(dms.data.events[0].message_create.message_data);
-    getDmPartner(dmPartnerID).then(partner=>{
-      friendNameDM = partner.data[0].name;
-      console.log(friendNameDM);
-      friendImageDM = partner.data[0].profile_image_url;
-      console.log(friendImageDM);
-    });
-  });
 
   getFriends.then(friends=>{
     //FILLING FRIENDS DATA CONTAINERS
@@ -135,27 +106,43 @@ app.get('/', (req, res) => {
     userPic= tweets.data[0].user.profile_image_url;
     followingCount = tweets.data[0].user.friends_count;
     userBanner = tweets.data[0].user.profile_banner_url;
+    
+  });
+  slideInDms.then(dms=> {
+    dms.data.events.forEach(element => {
+      if(userKey != element.message_create.sender_id){
+        dmPartnerID = element.message_create.sender_id;
+        dmDate.push(timestampToDate(element.created_timestamp));
+        dmText.push(element.message_create.message_data.text);
+      }
+    });
 
-    Promise.all([getFriends, getTweets, slideInDms, getDmPartner]).then(
-      res.render('index', {
-        tweetsSent,
-        userScreenName,
-        userHandle,
-        userPic,
-        userBanner,
-        tweetReTweets,
-        tweetLikes,
-        tweetDate,
-        followingCount,
-        friendNames,
-        friendHandles,
-        friendImages,
-        dmText,
-        dmDate,
-        friendNameDM,
-        friendImageDM
-      })
-    );
+    getDmPartner(dmPartnerID).then(partner=>{
+      friendNameDM = partner.data[0].name;
+      console.log(friendNameDM);
+      friendImageDM = partner.data[0].profile_image_url;
+      console.log(friendImageDM);
+    });
+      Promise.resolve([getDmPartner]).then(
+        res.render('index', {
+          tweetsSent,
+          userScreenName,
+          userHandle,
+          userPic,
+          userBanner,
+          tweetReTweets,
+          tweetLikes,
+          tweetDate,
+          followingCount,
+          friendNames,
+          friendHandles,
+          friendImages,
+          dmText,
+          dmDate,
+          friendNameDM,
+          friendImageDM
+        })
+      );
   });
 });
 
