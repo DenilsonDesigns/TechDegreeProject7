@@ -20,6 +20,16 @@ const options1 = { screen_name: config.screen_name,
 const options2 = {screen_name: config.screen_name};
 
 
+function sendTweet(){
+  console.log("Sent");
+}
+////////////////
+///SEND TWEET///
+////////////////
+// T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
+//   console.log(data)
+// });
+
 let userKey = config.access_token.split("-");
 userKey = Number(userKey[0]);
 // console.log(userKey);
@@ -132,14 +142,11 @@ app.get('/', (req, res) => {
   });
 });
 
+//HANDLING INCORRECT ROUTE
+app.get("/:id", (req,res)=>{
+  res.status(404).send(`<h2>Error 404: The page at route "${req.params.id}" was not found, please check URL</h2>`);
+});
 
-
-////////////////
-///SEND TWEET///
-////////////////
-// T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
-//   console.log(data)
-// });
 
 //PORT
 const port = 3000;
