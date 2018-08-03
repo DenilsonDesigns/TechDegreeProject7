@@ -24,31 +24,18 @@ let userKey = config.access_token.split("-");
 userKey = Number(userKey[0]);
 // console.log(userKey);
 
+
 //GET USERS LATEST 5 TWEETS
-const getTweets = new Promise((resolve, reject)=>{
-  resolve(T.get('statuses/user_timeline', options1));
-  reject(new Error('Could not get tweets'));
-});
+const getTweets = T.get('statuses/user_timeline', options1);
 
 //GET FOLLOWING/FRIENDS LIST
-const getFriends = new Promise((resolve, reject)=>{
-  resolve(T.get('friends/list', options2));
-  reject(new Error('Could not retrieve friends data'));
-});
+const getFriends = T.get('friends/list', options2);
 
 //SLIDE IN DMS
-const slideInDms = new Promise((resolve, reject)=>{
-  resolve(T.get('direct_messages/events/list', options2));
-  reject(new Error('Could not slide in DMs'));
-});
+const slideInDms = T.get('direct_messages/events/list', options2);
 
 // GET DM PARTNER DEETS
-const getDmPartner = function(dmPart){
-  return new Promise((resolve, reject)=>{
-    resolve(T.get('users/lookup', {user_id: dmPart}));
-    reject(new Error('Could not retrieve DM partner'));
-  });
-}
+const getDmPartner = (dmPart) => T.get('users/lookup', {user_id: dmPart});
 
 //CONVERT TIMESTAMP TO DATE
 function timestampToDate(timestamp){
@@ -122,8 +109,7 @@ app.get('/', (req, res) => {
       console.log(friendNameDM);
       friendImageDM = partner.data[0].profile_image_url;
       console.log(friendImageDM);
-    });
-      Promise.resolve([getDmPartner]).then(
+    }).then(()=>{
         res.render('index', {
           tweetsSent,
           userScreenName,
@@ -141,8 +127,8 @@ app.get('/', (req, res) => {
           dmDate,
           friendNameDM,
           friendImageDM
-        })
-      );
+        });
+    });
   });
 });
 
