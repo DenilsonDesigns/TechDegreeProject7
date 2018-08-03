@@ -21,14 +21,15 @@ const options2 = {screen_name: config.screen_name};
 
 
 function sendTweet(){
-  console.log("Sent");
-}
-////////////////
+  ////////////////
 ///SEND TWEET///
 ////////////////
 // T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
 //   console.log(data)
 // });
+  console.log("Sent");
+}
+
 
 let userKey = config.access_token.split("-");
 userKey = Number(userKey[0]);
