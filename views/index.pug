@@ -42,15 +42,15 @@ html(lang="en")
                   li
                     a Sign Out
       .app--tweet
-        form(method="get" action="/")
+        form(method="post" action="/")
           .circle--fluid
             .circle--fluid--cell.circle--fluid--primary.align-bottom.app--tweet--post
               .app--avatar(style=`background-image: url(${userPic})`)
                 img(src='/static/images/m-spore.png')
-              textarea#tweet-textarea.circle--textarea--input(placeholder="What's happening?")
+              textarea#tweet-textarea.circle--textarea--input(placeholder="What's happening?" name="tweet")
               strong#tweet-char.app--tweet--char 140
             .circle--fluid--cell.align-bottom
-              button(type="submit").button-primary Tweet
+              button.button-primary Tweet
       .bounds.app--body
         .app--section--header
           .grid-33
@@ -297,28 +297,38 @@ html(lang="en")
                   | Conversation with 
                   a #{friendNameDM}
                 ul.app--message--conversation
+                  -if(dmText[0]){ 
                   li.app--message--me
                     .app--avatar(style=`background-image: url(${friendImageDM})`)
                       img(src='/static/images/m-spore.png')
                     p.app--message--text #{dmText[0]}
                     p.app--message--timestamp #{dmDate[0]}
+                  -}
+                  -if(dmText[1]){ 
                   li.app--message--me
                     .app--avatar(style=`background-image: url(${friendImageDM})`)
                       img(src='/static/images/m-spore.png')
                     p.app--message--text #{dmText[1]}
                     p.app--message--timestamp #{dmDate[1]}
+                  -} 
+                  -if(dmText[2]){ 
                   li.app--message--me
                     .app--avatar(style=`background-image: url(${friendImageDM})`)
                       img(src='/static/images/m-spore.png')
                     p.app--message--text #{dmText[2]}
                     p.app--message--timestamp #{dmDate[2]}
+                  -}
+                  -if(dmText[3]){  
                   li.app--message--me
                     .app--avatar(style=`background-image: url(${friendImageDM})`)
                       img(src='/static/images/m-spore.png')
                     p.app--message--text #{dmText[3]}
                     p.app--message--timestamp #{dmDate[3]}
+                  -}  
+                  -if(dmText[4]){  
                   li.app--message--me
                     .app--avatar(style=`background-image: url(${friendImageDM})`)
                       img(src='/static/images/m-spore.png')
                     p.app--message--text #{dmText[4]}
                     p.app--message--timestamp #{dmDate[4]}
+                  -}  

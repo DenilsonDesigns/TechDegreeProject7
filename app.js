@@ -1,9 +1,12 @@
 const config = require('./js/config');
 const Twit = require('twit');
+const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 
+
 app.set('view engine', 'pug');
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/static', express.static('public'));
 
 //SETTING UP TWIT MODULE OPTIONS
@@ -55,6 +58,13 @@ function timestampToDate(timestamp){
   ts = ts.toDateString().slice(4,10);
   return ts;
 }
+
+//POST ROUTE
+app.post('/', (req,res)=>{
+
+  console.log(req.body.tweet);
+
+});
 
 //MAIN RENDER*************
 app.get('/', (req, res) => {
