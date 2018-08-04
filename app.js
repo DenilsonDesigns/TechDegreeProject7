@@ -55,7 +55,7 @@ function timestampToDate(timestamp){
   return ts;
 }
 
-//GLOBAL VARIABLES 
+//GLOBAL VARIABLES
 let tweetsSent = [];
 let tweetLikes = [];
 let tweetReTweets = [];
