@@ -25,8 +25,8 @@ const options2 = {screen_name: config.screen_name};
 
 function sendTweet(tweet){
   T.post('statuses/update', { status: tweet }, function(err, data, response) {
-    // console.log(data)
   });
+  tweetsSent.unshift(tweet);
   console.log("Sent");
 }
 
@@ -56,43 +56,74 @@ function timestampToDate(timestamp){
 }
 
 
-// //POST ROUTE
-// app.post('/', (req,res)=>{
+let tweetsSent = [];
+let tweetLikes = [];
+let tweetReTweets = [];
+let tweetDate = [];
+let userScreenName = '';
+let userHandle ='';
+let userPic= '';
+let userBanner = '';
+let followingCount = '';
+//FOR FRIENDS LIST
+let friendNames = [];  
+let friendHandles = [];
+let friendImages = [];
+//FOR DMS
+let dmPartnerID = '';
+let friendNameDM = '';
+let dmText = [];
+let dmDate = [];
+let friendImageDM = '';
 
-//   sendTweet(req.body.tweet);
-//   console.log(req.body.tweet);
-  
-//   res.redirect('/');
-// });
+
+//POST ROUTE
+app.post('/', (req,res)=>{
+  sendTweet(req.body.tweet);
+  console.log(req.body.tweet);
+  res.render('index', {
+    tweetsSent,
+    userScreenName,
+    userHandle,
+    userPic,
+    userBanner,
+    tweetReTweets,
+    tweetLikes,
+    tweetDate,
+    followingCount,
+    friendNames,
+    friendHandles,
+    friendImages,
+    dmText,
+    dmDate,
+    friendNameDM,
+    friendImageDM
+  });
+});
 
 
 //MAIN RENDER*************
-app.route('/') 
-.post((req, res, next)=>{
-  sendTweet(req.body.tweet);
-  console.log(req.body.tweet);
-})
-.get((req, res) => {
+app.get('/', (req, res) => {
   //DATA CONTAINERS
-  let tweetsSent = [];
-  let tweetLikes = [];
-  let tweetReTweets = [];
-  let tweetDate = [];
-  let userScreenName = '';
-  let userHandle ='';
-  let userPic= '';
-  let userBanner = '';
-  let followingCount = '';
+  tweetsSent = [];
+  tweetLikes = [];
+  tweetReTweets = [];
+  tweetDate = [];
+  userScreenName = '';
+  userHandle ='';
+  userPic= '';
+  userBanner = '';
+  followingCount = '';
   //FOR FRIENDS LIST
-  let friendNames = [];  
-  let friendHandles = [];
-  let friendImages = [];
+  friendNames = [];  
+  friendHandles = [];
+  friendImages = [];
   //FOR DMS
-  let dmPartnerID = '';
-  let friendNameDM = '';
-  let dmText = [];
-  let dmDate = [];
-  let friendImageDM = '';
+  dmPartnerID = '';
+  friendNameDM = '';
+  dmText = [];
+  dmDate = [];
+  friendImageDM = '';
 
 
   getFriends.then(friends=>{
