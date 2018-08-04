@@ -24,15 +24,11 @@ const options2 = {screen_name: config.screen_name};
 
 
 function sendTweet(tweet){
-///////////////
-//SEND TWEET///
-//////////////
-T.post('statuses/update', { status: tweet }, function(err, data, response) {
-  console.log(data)
-});
+  T.post('statuses/update', { status: tweet }, function(err, data, response) {
+    // console.log(data)
+  });
   console.log("Sent");
 }
-
 
 let userKey = config.access_token.split("-");
 userKey = Number(userKey[0]);
@@ -59,18 +55,24 @@ function timestampToDate(timestamp){
   return ts;
 }
 
-//POST ROUTE
-app.post('/', (req,res)=>{
 
-  sendTweet(req.body.tweet);
-  console.log(req.body.tweet);
+// //POST ROUTE
+// app.post('/', (req,res)=>{
 
-  res.redirect('/');
-});
+//   sendTweet(req.body.tweet);
+//   console.log(req.body.tweet);
+  
+//   res.redirect('/');
+// });
 
 
 //MAIN RENDER*************
-app.get('/', (req, res) => {
+app.route('/') 
+.post((req, res, next)=>{
+  sendTweet(req.body.tweet);
+  console.log(req.body.tweet);
+})
+.get((req, res) => {
   //DATA CONTAINERS
   let tweetsSent = [];
   let tweetLikes = [];
@@ -82,9 +84,9 @@ app.get('/', (req, res) => {
   let userBanner = '';
   let followingCount = '';
   //FOR FRIENDS LIST
-  let friendNames = [];    //name
-  let friendHandles = [];  //screen_name
-  let friendImages = [];   //profile_image_url
+  let friendNames = [];  
+  let friendHandles = [];
+  let friendImages = [];
   //FOR DMS
   let dmPartnerID = '';
   let friendNameDM = '';
@@ -153,8 +155,6 @@ app.get('/', (req, res) => {
     });
   });
 });
-
-
 
 
 //HANDLING INCORRECT ROUTE
