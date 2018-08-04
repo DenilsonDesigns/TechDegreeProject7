@@ -23,13 +23,13 @@ const options1 = { screen_name: config.screen_name,
 const options2 = {screen_name: config.screen_name};
 
 
-function sendTweet(){
-  ////////////////
-///SEND TWEET///
-////////////////
-// T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
-//   console.log(data)
-// });
+function sendTweet(tweet){
+///////////////
+//SEND TWEET///
+//////////////
+T.post('statuses/update', { status: tweet }, function(err, data, response) {
+  console.log(data)
+});
   console.log("Sent");
 }
 
@@ -62,9 +62,12 @@ function timestampToDate(timestamp){
 //POST ROUTE
 app.post('/', (req,res)=>{
 
+  sendTweet(req.body.tweet);
   console.log(req.body.tweet);
 
+  res.redirect('/');
 });
+
 
 //MAIN RENDER*************
 app.get('/', (req, res) => {
@@ -127,9 +130,7 @@ app.get('/', (req, res) => {
 
     getDmPartner(dmPartnerID).then(partner=>{
       friendNameDM = partner.data[0].name;
-      console.log(friendNameDM);
       friendImageDM = partner.data[0].profile_image_url;
-      console.log(friendImageDM);
     }).then(()=>{
         res.render('index', {
           tweetsSent,
@@ -152,6 +153,9 @@ app.get('/', (req, res) => {
     });
   });
 });
+
+
+
 
 //HANDLING INCORRECT ROUTE
 app.get("/:id", (req,res)=>{
