@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 
-
 app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/static', express.static('public'));
@@ -25,9 +24,10 @@ const options2 = {screen_name: config.screen_name};
 
 function sendTweet(tweet){
   T.post('statuses/update', { status: tweet }, function(err, data, response) {
+    let tweetDate= data.created_at;
   });
   tweetsSent.unshift(tweet);
-  console.log("Sent");
+  tweetDate.unshift(tweetDate.slice(4,10));
 }
 
 let userKey = config.access_token.split("-");
@@ -55,7 +55,7 @@ function timestampToDate(timestamp){
   return ts;
 }
 
-
+//GLOBAL VARIABLES 
 let tweetsSent = [];
 let tweetLikes = [];
 let tweetReTweets = [];
@@ -80,7 +80,6 @@ let friendImageDM = '';
 //POST ROUTE
 app.post('/', (req,res)=>{
   sendTweet(req.body.tweet);
-  console.log(req.body.tweet);
   res.render('index', {
     tweetsSent,
     userScreenName,
