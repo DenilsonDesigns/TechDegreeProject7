@@ -23,18 +23,6 @@ const options1 = {
 };
 const options2 = { screen_name: config.screen_name };
 
-function sendTweet(tweet) {
-  let tweetNewDate;
-  let mainP =T.post("statuses/update", { status: tweet }, function(err, data, response) {
-    tweetNewDate = data.created_at;
-    tweetsSent.unshift(tweet);
-    tweetDate.unshift(tweetNewDate.slice(4, 10));
-    // console.log(data);
-  });
-  console.log(tweetDate);
-  return mainP;
-}
-
 let userKey = config.access_token.split("-");
 userKey = Number(userKey[0]);
 // console.log(userKey);
@@ -82,7 +70,15 @@ let friendImageDM = "";
 
 //POST ROUTE
 app.post("/", (req, res) => {
-  sendTweet(req.body.tweet).then(() => {
+  let tweetNewDate;
+  let tweet = req.body.tweet;
+  T.post("statuses/update", { status: tweet }, function(err, data, response) {
+    tweetNewDate = data.created_at;
+    tweetsSent.unshift(tweet);
+    tweetDate.unshift(tweetNewDate.slice(4, 10));
+    // console.log(data);
+    console.log(tweetDate);
+  }).then((res) => {
     res.render("index", {
       tweetsSent,
       userScreenName,
