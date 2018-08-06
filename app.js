@@ -72,32 +72,37 @@ let friendImageDM = "";
 app.post("/", (req, res) => {
   let tweetNewDate;
   let tweet = req.body.tweet;
-  T.post("statuses/update", { status: tweet }, function(err, data, response) {
-    tweetNewDate = data.created_at;
-    tweetsSent.unshift(tweet);
-    tweetDate.unshift(tweetNewDate.slice(4, 10));
-    // console.log(data);
-    console.log(tweetDate);
-  }).then((res) => {
-    res.render("index", {
-      tweetsSent,
-      userScreenName,
-      userHandle,
-      userPic,
-      userBanner,
-      tweetReTweets,
-      tweetLikes,
-      tweetDate,
-      followingCount,
-      friendNames,
-      friendHandles,
-      friendImages,
-      dmText,
-      dmDate,
-      friendNameDM,
-      friendImageDM
+  T.post("statuses/update", { status: tweet })
+    .then(res => {
+      tweetNewDate = res.data.created_at;
+      tweetDate.unshift(tweetNewDate.slice(4, 10));
+      tweetsSent.unshift(res.data.text);
+      tweetLikes.unshift(0);
+      tweetReTweets.unshift(0);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+    .then(() => {
+      res.render("index", {
+        tweetsSent,
+        userScreenName,
+        userHandle,
+        userPic,
+        userBanner,
+        tweetReTweets,
+        tweetLikes,
+        tweetDate,
+        followingCount,
+        friendNames,
+        friendHandles,
+        friendImages,
+        dmText,
+        dmDate,
+        friendNameDM,
+        friendImageDM
+      });
     });
-  });
 });
 
 //MAIN RENDER*************
@@ -117,7 +122,7 @@ app.get("/", (req, res) => {
   friendHandles = [];
   friendImages = [];
   //FOR DMS
-  dmPartnerID = "";
+  dmPartnerID = [];
   friendNameDM = "";
   dmText = [];
   dmDate = [];
@@ -150,15 +155,18 @@ app.get("/", (req, res) => {
   });
   slideInDms.then(dms => {
     dms.data.events.forEach(element => {
+      // console.log(element.message_create.sender_id);
       if (userKey != element.message_create.sender_id) {
-        dmPartnerID = element.message_create.sender_id;
+        dmPartnerID.push(element.message_create.sender_id);
         dmDate.push(timestampToDate(element.created_timestamp));
         dmText.push(element.message_create.message_data.text);
       }
     });
 
-    getDmPartner(dmPartnerID)
+    getDmPartner(dmPartnerID[0])
       .then(partner => {
+        // console.log(dmPartnerID);
+        // console.log(partner);
         friendNameDM = partner.data[0].name;
         friendImageDM = partner.data[0].profile_image_url;
       })
