@@ -9,7 +9,14 @@ li.app--message
    p.app--message--text Fantastic! You wanna grab lunch?
    p.app--message--timestamp 2 hours ago
 li.app--message
-   .app--avatar(style='background-image: url(/static/images/f-spore.png)')
+   .app--avatar(style=`background-image: url(${friendImageDM})`)
       img(src='/static/images/f-spore.png')
-   p.app--message--text Aww yeah.. I'm craving a Triple Quarter Mack!
-   p.app--message--timestamp 1 hour ago
+   p.app--message--text #{dmText[4]}
+   p.app--message--timestamp #{dmDate[4]}
+<!-- ***********************************************************************-->
+
+li.app--message--me
+   .app--avatar(style=`background-image: url(${friendImageDM})`)
+      img(src='/static/images/m-spore.png')
+   p.app--message--text #{dmText[4]}
+   p.app--message--timestamp #{dmDate[4]}

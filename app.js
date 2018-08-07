@@ -18,10 +18,10 @@ const T = new Twit({
 
 //SET UP USERNAME AND TWEET COUNT
 const options1 = {
-  screen_name: config.screen_name,
+  // screen_name: config.screen_name,
   count: 5
 };
-const options2 = { screen_name: config.screen_name };
+// const options2 = { screen_name: config.screen_name };
 
 let userKey = config.access_token.split("-");
 userKey = Number(userKey[0]);
@@ -31,10 +31,10 @@ userKey = Number(userKey[0]);
 const getTweets = T.get("statuses/user_timeline", options1);
 
 //GET FOLLOWING/FRIENDS LIST
-const getFriends = T.get("friends/list", options2);
+const getFriends = T.get("friends/list"); //options2
 
 //SLIDE IN DMS
-const slideInDms = T.get("direct_messages/events/list", options2);
+const slideInDms = T.get("direct_messages/events/list"); //options2
 
 // GET DM PARTNER DEETS
 const getDmPartner = dmPart => T.get("users/lookup", { user_id: dmPart });
@@ -81,7 +81,10 @@ app.post("/", (req, res) => {
       tweetReTweets.unshift(0);
     })
     .catch(err => {
-      console.error(err);
+      if (err) {
+        console.error(err);
+        res.redirect("/");
+      }
     })
     .then(() => {
       res.render("index", {
@@ -154,11 +157,13 @@ app.get("/", (req, res) => {
     userBanner = tweets.data[0].user.profile_banner_url;
   });
   slideInDms.then(dms => {
+    // console.log(dms.data.events);
     dms.data.events.forEach(element => {
       // console.log(element.message_create.sender_id);
       if (userKey != element.message_create.sender_id) {
         dmPartnerID.push(element.message_create.sender_id);
         dmDate.push(timestampToDate(element.created_timestamp));
+        console.log(element.created_timestamp);
         dmText.push(element.message_create.message_data.text);
       }
     });
@@ -171,6 +176,7 @@ app.get("/", (req, res) => {
         friendImageDM = partner.data[0].profile_image_url;
       })
       .then(() => {
+        // console.log(dmDate);
         res.render("index", {
           tweetsSent,
           userScreenName,
