@@ -2174,6 +2174,7 @@ body {
   height: 100%;
   border-right: 1px solid #e1e1e1;
   overflow-Y: scroll;
+
 }
 /* line 50, ../sass/global.sass */
 .grid-33:last-child .app--section {
@@ -2410,6 +2411,7 @@ a:hover .app--avatar {
 /* line 207, ../sass/global.sass */
 .app--message--list, .app--message--conversation {
   list-style: none;
+  
   /* overflow: scroll; */
 }
 /* line 210, ../sass/global.sass */
@@ -2432,6 +2434,7 @@ a:hover .app--avatar {
 }
 /* line 225, ../sass/global.sass */
 .app--message--conversation {
+  /* overflow-y: scroll; */
   margin: 0;
 }
 /* line 228, ../sass/global.sass */
@@ -2440,7 +2443,7 @@ a:hover .app--avatar {
   color: #fff;
   padding: 5px 15px;
   border-radius: 20px;
-  margin: 0 0 5px;
+  margin: 0 15px 5px;
   text-align: left;
   display: inline-block;
   position: relative;
@@ -2460,13 +2463,13 @@ a:hover .app--avatar {
 .app--message--timestamp {
   font-size: 1.2rem;
   color: #999;
-  margin: 0;
+  margin: 0 85px 5px;
 }
 /* line 252, ../sass/global.sass */
 .app--message {
   padding: 0 0 10px;
-  padding-left: 70px;
-  position: relative;
+  padding-left: 10px;
+  /* position: relative; */
 }
 /* line 256, ../sass/global.sass */
 .app--message .app--avatar {

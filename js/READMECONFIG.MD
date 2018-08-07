@@ -8,8 +8,7 @@ const configOptions=  {
       consumer_key:         '.....',  
       consumer_secret:      '.....',  
       access_token:         '.....',  
-      access_token_secret:  '.....',  
-      screen_name: 'your @ here'  
+      access_token_secret:  '.....'  
       };  
 
 module.exports = configOptions;  
