@@ -137,84 +137,107 @@ app.get("/", (req, res) => {
   (async function() {
     // console.log(screenName);
     await T.get("account/verify_credentials", { skip_status: true })
-    .then(async res => {
-      // console.log(res);
-      screenName = res.data.screen_name;
-      console.log(screenName);
-      console.log("Before");  // HOW DO I MAKE THIS LOG BEFORE "AFTER" (FEW LINES DOWN)???
-    });
+      .then(async res => {
+        // console.log(res);
+        screenName = res.data.screen_name;
+        console.log(screenName);
+        console.log("Before"); // HOW DO I MAKE THIS LOG BEFORE "AFTER" (FEW LINES DOWN)???
+      })
+      .catch(err => {
+        console.log(err);
+      });
   })();
 
-  getFriends.then(friends => {
-    console.log("after");
-    //FILLING FRIENDS DATA CONTAINERS
-    friends.data.users.forEach(element => {
-      friendNames.push(element.name);
-    });
-    friends.data.users.forEach(element => {
-      friendHandles.push(element.screen_name);
-    });
-    friends.data.users.forEach(element => {
-      friendImages.push(element.profile_image_url);
-    });
-  });
-  getTweets.then(tweets => {
-    tweets.data.forEach(element => {
-      tweetsSent.push(element.text);
-      tweetLikes.push(element.favorite_count);
-      tweetReTweets.push(element.retweet_count);
-      tweetDate.push(element.created_at.slice(4, 10));
-    });
-    userScreenName = tweets.data[0].user.name;
-    userHandle = tweets.data[0].user.screen_name;
-    userPic = tweets.data[0].user.profile_image_url;
-    followingCount = tweets.data[0].user.friends_count;
-    userBanner = tweets.data[0].user.profile_banner_url;
-  });
-  slideInDms.then(dms => {
-    // console.log(dms.data.events);
-    dms.data.events.forEach(element => {
-      // console.log(dmPartnerID[0]);
-      if (userKey != element.message_create.sender_id) {
-        // console.log(dmPartnerID[0]);
-        dmPartnerID.push(element.message_create.sender_id);
-      }
-      if (element.message_create.sender_id == dmPartnerID[0]) {
-        dmDate.push(timestampToDate(element.created_timestamp));
-        // console.log(dmPartnerID[0]);
-        dmText.push(element.message_create.message_data.text);
-      }
+  //POPULATE FRIENDS LIST
+  getFriends
+    .then(friends => {
+      console.log("after");
+      //FILLING FRIENDS DATA CONTAINERS
+      friends.data.users.forEach(element => {
+        friendNames.push(element.name);
+      });
+      friends.data.users.forEach(element => {
+        friendHandles.push(element.screen_name);
+      });
+      friends.data.users.forEach(element => {
+        friendImages.push(element.profile_image_url);
+      });
+    })
+    .catch(err => {
+      console.log(err);
     });
 
-    getDmPartner(dmPartnerID[0])
-      .then(partner => {
-        // console.log(dmPartnerID);
-        // console.log(partner);
-        friendNameDM = partner.data[0].name;
-        friendImageDM = partner.data[0].profile_image_url;
-      })
-      .then(() => {
-        // console.log(dmDate);
-        res.render("index", {
-          tweetsSent,
-          userScreenName,
-          userHandle,
-          userPic,
-          userBanner,
-          tweetReTweets,
-          tweetLikes,
-          tweetDate,
-          followingCount,
-          friendNames,
-          friendHandles,
-          friendImages,
-          dmText,
-          dmDate,
-          friendNameDM,
-          friendImageDM
-        });
+  //POPULATE TWEETS
+  getTweets
+    .then(tweets => {
+      tweets.data.forEach(element => {
+        tweetsSent.push(element.text);
+        tweetLikes.push(element.favorite_count);
+        tweetReTweets.push(element.retweet_count);
+        tweetDate.push(element.created_at.slice(4, 10));
       });
-  });
+      userScreenName = tweets.data[0].user.name;
+      userHandle = tweets.data[0].user.screen_name;
+      userPic = tweets.data[0].user.profile_image_url;
+      followingCount = tweets.data[0].user.friends_count;
+      userBanner = tweets.data[0].user.profile_banner_url;
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+  //GET DM INFO
+  slideInDms
+    .then(dms => {
+      // console.log(dms.data.events);
+      dms.data.events.forEach(element => {
+        // console.log(dmPartnerID[0]);
+        if (userKey != element.message_create.sender_id) {
+          // console.log(dmPartnerID[0]);
+          dmPartnerID.push(element.message_create.sender_id);
+        }
+        if (element.message_create.sender_id == dmPartnerID[0]) {
+          dmDate.push(timestampToDate(element.created_timestamp));
+          // console.log(dmPartnerID[0]);
+          dmText.push(element.message_create.message_data.text);
+        }
+      });
+      //THIS IS A CALLBACK TO SLIDE IN DMS
+      getDmPartner(dmPartnerID[0])
+        .then(partner => {
+          // console.log(dmPartnerID);
+          // console.log(partner);
+          friendNameDM = partner.data[0].name;
+          friendImageDM = partner.data[0].profile_image_url;
+        })
+        .then(() => {
+          // console.log(dmDate);
+          res.render("index", {
+            tweetsSent,
+            userScreenName,
+            userHandle,
+            userPic,
+            userBanner,
+            tweetReTweets,
+            tweetLikes,
+            tweetDate,
+            followingCount,
+            friendNames,
+            friendHandles,
+            friendImages,
+            dmText,
+            dmDate,
+            friendNameDM,
+            friendImageDM
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    });
 });
 
 //HANDLING INCORRECT ROUTE
