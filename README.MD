@@ -1,6 +1,6 @@
 # TECH DEGREE PROJECT 7
 
-Please insert your own config in a js/config.js file on the root of this project.
+Please insert your own config.js in the js folder.
 
 In this format:
 

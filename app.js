@@ -1,6 +1,5 @@
 const config = require("./js/config");
 const Twit = require("twit");
-
 const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
