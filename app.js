@@ -1,5 +1,6 @@
 const config = require("./js/config");
 const Twit = require("twit");
+
 const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
@@ -16,12 +17,13 @@ const T = new Twit({
   access_token_secret: config.access_token_secret
 });
 
+let screenName = "";
 //SET UP USERNAME AND TWEET COUNT
 const options1 = {
-  // screen_name: config.screen_name,
+  screen_name: screenName,
   count: 5
 };
-// const options2 = { screen_name: config.screen_name };
+const options2 = { screen_name: screenName };
 
 let userKey = config.access_token.split("-");
 userKey = Number(userKey[0]);
@@ -31,10 +33,10 @@ userKey = Number(userKey[0]);
 const getTweets = T.get("statuses/user_timeline", options1);
 
 //GET FOLLOWING/FRIENDS LIST
-const getFriends = T.get("friends/list"); //options2
+const getFriends = T.get("friends/list", options2);
 
 //SLIDE IN DMS
-const slideInDms = T.get("direct_messages/events/list"); //options2
+const slideInDms = T.get("direct_messages/events/list", options2);
 
 // GET DM PARTNER DEETS
 const getDmPartner = dmPart => T.get("users/lookup", { user_id: dmPart });
@@ -131,7 +133,20 @@ app.get("/", (req, res) => {
   dmDate = [];
   friendImageDM = "";
 
+  //API CALL TO GET SCREENNAME.
+  (async function() {
+    // console.log(screenName);
+    await T.get("account/verify_credentials", { skip_status: true })
+    .then(async res => {
+      // console.log(res);
+      screenName = res.data.screen_name;
+      console.log(screenName);
+      console.log("Before");  // HOW DO I MAKE THIS LOG BEFORE "AFTER" (FEW LINES DOWN)???
+    });
+  })();
+
   getFriends.then(friends => {
+    console.log("after");
     //FILLING FRIENDS DATA CONTAINERS
     friends.data.users.forEach(element => {
       friendNames.push(element.name);
@@ -159,11 +174,14 @@ app.get("/", (req, res) => {
   slideInDms.then(dms => {
     // console.log(dms.data.events);
     dms.data.events.forEach(element => {
-      // console.log(element.message_create.sender_id);
+      // console.log(dmPartnerID[0]);
       if (userKey != element.message_create.sender_id) {
+        // console.log(dmPartnerID[0]);
         dmPartnerID.push(element.message_create.sender_id);
+      }
+      if (element.message_create.sender_id == dmPartnerID[0]) {
         dmDate.push(timestampToDate(element.created_timestamp));
-        console.log(element.created_timestamp);
+        // console.log(dmPartnerID[0]);
         dmText.push(element.message_create.message_data.text);
       }
     });
