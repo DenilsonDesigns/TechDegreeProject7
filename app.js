@@ -2,6 +2,7 @@ const config = require("./js/config");
 const Twit = require("twit");
 const bodyParser = require("body-parser");
 const express = require("express");
+const moment = require('moment');
 const app = express();
 
 app.set("view engine", "pug");
@@ -42,11 +43,12 @@ const getDmPartner = dmPart => T.get("users/lookup", { user_id: dmPart });
 
 //CONVERT TIMESTAMP TO DATE
 function timestampToDate(timestamp) {
-  let ts = timestamp; //dms.data.events[0].created_timestamp
-  ts = new Date();
-  ts = ts.toDateString().slice(4, 10);
+  let ts; 
+  ts = new Date(timestamp);
+  ts = ts.toGMTString().slice(5,11);
   return ts;
 }
+
 
 //GLOBAL VARIABLES
 let tweetsSent = [];
@@ -69,7 +71,6 @@ let dmText = [];
 let dmDate = [];
 let friendImageDM = "";
 
-//POST ROUTE
 app.post("/", (req, res) => {
   let tweetNewDate;
   let tweet = req.body.tweet;
@@ -82,10 +83,8 @@ app.post("/", (req, res) => {
       tweetReTweets.unshift(0);
     })
     .catch(err => {
-      if (err) {
-        console.error(err);
-        res.redirect("/");
-      }
+      console.error(err);
+      res.redirect("/");
     })
     .then(() => {
       res.render("index", {
@@ -106,8 +105,18 @@ app.post("/", (req, res) => {
         friendNameDM,
         friendImageDM
       });
+    })
+    .catch(err => {
+      console.error(err);
     });
 });
+
+// //POST ROUTE
+// app.post("/", (req, res) => {
+//   const tweet = req.body.tweet;
+//   T.post("statuses/update", { status: tweet });
+//   res.redirect("/");
+// });
 
 //MAIN RENDER*************
 app.get("/", (req, res) => {
@@ -137,10 +146,7 @@ app.get("/", (req, res) => {
     // console.log(screenName);
     await T.get("account/verify_credentials", { skip_status: true })
       .then(async res => {
-        // console.log(res);
         screenName = res.data.screen_name;
-        console.log(screenName);
-        console.log("Before"); // HOW DO I MAKE THIS LOG BEFORE "AFTER" (FEW LINES DOWN)???
       })
       .catch(err => {
         console.log(err);
@@ -150,7 +156,6 @@ app.get("/", (req, res) => {
   //POPULATE FRIENDS LIST
   getFriends
     .then(friends => {
-      console.log("after");
       //FILLING FRIENDS DATA CONTAINERS
       friends.data.users.forEach(element => {
         friendNames.push(element.name);
@@ -174,6 +179,7 @@ app.get("/", (req, res) => {
         tweetLikes.push(element.favorite_count);
         tweetReTweets.push(element.retweet_count);
         tweetDate.push(element.created_at.slice(4, 10));
+        // tweetDate.push(moment(element.created_at).startOf().fromNow());
       });
       userScreenName = tweets.data[0].user.name;
       userHandle = tweets.data[0].user.screen_name;
@@ -196,8 +202,7 @@ app.get("/", (req, res) => {
           dmPartnerID.push(element.message_create.sender_id);
         }
         if (element.message_create.sender_id == dmPartnerID[0]) {
-          dmDate.push(timestampToDate(element.created_timestamp));
-          // console.log(dmPartnerID[0]);
+          dmDate.push(timestampToDate(Number(element.created_timestamp)));
           dmText.push(element.message_create.message_data.text);
         }
       });
